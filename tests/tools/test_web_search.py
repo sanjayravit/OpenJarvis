@@ -38,6 +38,12 @@ class TestWebSearchTool:
 
     def test_execute_no_api_key(self, monkeypatch):
         """When no API key, falls back to DuckDuckGo."""
+        mock_ddgs = MagicMock()
+        mock_ddgs.text.return_value = [{"title": "t", "href": "u", "body": "b"}]
+        mock_ddgs_module = MagicMock()
+        mock_ddgs_module.DDGS.return_value = mock_ddgs
+        monkeypatch.setitem(sys.modules, "ddgs", mock_ddgs_module)
+
         tool = WebSearchTool(api_key=None)
         with patch.dict("os.environ", {}, clear=True):
             tool._api_key = None
